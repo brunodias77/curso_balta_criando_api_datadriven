@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shop2.Models;
 
 namespace Shop2.Controllers
 {
@@ -7,15 +8,42 @@ namespace Shop2.Controllers
     {
         [HttpGet]
         [Route("")]
-        public string MeuMetodoGet()
+        public async Task<ActionResult<List<Category>>> MeuMetodoGet()
         {
-            return "Voce requisitou um metodo get na api do bruno dias";
+            return new List<Category>() { };
         }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Category>> MeuMetodoGetById(int id)
+        {
+            return new Category() { };
+        }
+
         [HttpPost]
         [Route("")]
-        public string MeuMetodoPost()
+        public async Task<ActionResult<Category>> MeuMetodoPost([FromBody] Category model)
         {
-            return "Voce requisitou um metodo Post";
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            return Ok(model);
+        }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult<List<Category>>> MeuMetodoPut(int id, [FromBody] Category model)
+        {
+            // Verifica se o ID informado é o mesmo do modelo
+            if (model.Id != id) return NotFound(new { message = "Categoria não encontrada" });
+            // Verifica se os dados sao validos
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            return BadRequest();
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult<List<Category>>> MeuMetodoDelete()
+        {
+            return Ok();
         }
     }
 }
