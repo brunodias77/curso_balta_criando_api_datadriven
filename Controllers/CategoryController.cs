@@ -36,7 +36,7 @@ namespace Shop2.Controllers
             if (model.Id != id) return NotFound(new { message = "Categoria não encontrada" });
             // Verifica se os dados sao validos
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return BadRequest();
+            return Ok(model);
         }
 
         [HttpDelete]
