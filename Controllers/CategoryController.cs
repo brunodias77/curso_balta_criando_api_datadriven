@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shop2.Data;
 using Shop2.Models;
 
 namespace Shop2.Controllers
@@ -22,9 +23,11 @@ namespace Shop2.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<Category>> MeuMetodoPost([FromBody] Category model)
+        public async Task<ActionResult<Category>> MeuMetodoPost([FromBody] Category model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            context.Categories.Add(model);
+            await context.SaveChangesAsync();
             return Ok(model);
         }
 
