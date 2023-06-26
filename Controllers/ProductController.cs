@@ -10,6 +10,7 @@ namespace Shop2.Controllers
     {
         [HttpGet]
         [Route("")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Product>>> Get([FromServices] DataContext context)
         {
             var products = await context.Products.Include(x => x.Category).AsNoTracking().ToListAsync();
@@ -17,6 +18,7 @@ namespace Shop2.Controllers
         }
         [HttpGet]
         [Route("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Product>> GetById([FromServices] DataContext context, int id)
         {
             var product = await context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -24,6 +26,7 @@ namespace Shop2.Controllers
         }
         [HttpGet]
         [Route("categories/{id:int}")] // -> products/categories/1
+        [AllowAnonymous]
         public async Task<ActionResult<List<Product>>> GetByCategory([FromServices] DataContext context, int id)
         {
             var products = await context.Products.Include(x => x.Category).AsNoTracking().Where(x => x.CategoryId == id).ToListAsync();
@@ -31,6 +34,7 @@ namespace Shop2.Controllers
         }
         [HttpPost]
         [Route("")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<Product>> Post(
             [FromServices] DataContext context,
             [FromBody] Product model)

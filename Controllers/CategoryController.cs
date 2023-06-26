@@ -10,6 +10,7 @@ namespace Shop2.Controllers
     {
         [HttpGet]
         [Route("")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
         {
             var categories = await context.Categories.AsNoTracking().ToListAsync();
@@ -18,6 +19,7 @@ namespace Shop2.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Category>> MeuMetodoGetById(int id, [FromServices] DataContext context)
         {
             var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -26,6 +28,7 @@ namespace Shop2.Controllers
 
         [HttpPost]
         [Route("")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<Category>> MeuMetodoPost([FromBody] Category model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -43,6 +46,7 @@ namespace Shop2.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<List<Category>>> MeuMetodoPut(int id, [FromBody] Category model, [FromServices] DataContext context)
         {
             //Verifica se o ID informado é o mesmo do modelo
@@ -67,6 +71,7 @@ namespace Shop2.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<List<Category>>> MeuMetodoDelete([FromServices] DataContext context, int id)
         {
             var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
