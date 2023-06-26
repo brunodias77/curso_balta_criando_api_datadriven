@@ -1,17 +1,13 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop2.Data;
 using Shop2.Models;
-using System;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
 using Shop2.Services;
 
 namespace Shop2.Controllers
 {
-    [Route("v1/users")]
+    [Route("users")]
     public class UserController : Controller
     {
         [HttpGet]
@@ -32,8 +28,9 @@ namespace Shop2.Controllers
         // [Authorize(Roles = "manager")]
         public async Task<ActionResult<User>> Post(
             [FromServices] DataContext context,
-            [FromBody]User model)
+            [FromBody] User model)
         {
+            Console.WriteLine("Entrou no Post");
             // Verifica se os dados são válidos
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -41,9 +38,6 @@ namespace Shop2.Controllers
             try
             {
                 // Força o usuário a ser sempre "funcionário"
-                model.Role = "employee";
-
-                context.Users.Add(model);
                 await context.SaveChangesAsync();
 
                 // Esconde a senha
@@ -63,7 +57,7 @@ namespace Shop2.Controllers
         public async Task<ActionResult<User>> Put(
             [FromServices] DataContext context,
             int id,
-            [FromBody]User model)
+            [FromBody] User model)
         {
             // Verifica se os dados são válidos
             if (!ModelState.IsValid)
@@ -91,7 +85,7 @@ namespace Shop2.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Authenticate(
                     [FromServices] DataContext context,
-                    [FromBody]User model)
+                    [FromBody] User model)
         {
             var user = await context.Users
                 .AsNoTracking()
@@ -110,5 +104,24 @@ namespace Shop2.Controllers
                 token = token
             };
         }
+        [HttpGet]
+        [Route("anonimo")]
+        [AllowAnonymous]
+        public string Anonimo() => "Anonimo";
+
+        [HttpGet]
+        [Route("autenticado")]
+        [Authorize(Roles = "employee")]
+        public string Autenticado() => "Autenticado";
+
+        [HttpGet]
+        [Route("funcionario")]
+        [Authorize(Roles = "employee")]
+        public string Funcionario() => "Funcionario";
+
+        [HttpGet]
+        [Route("gerente")]
+        [Authorize(Roles = "manager")]
+        public string Gerente() => "Gerente";
     }
 }
