@@ -30,7 +30,6 @@ namespace Shop2.Controllers
             [FromServices] DataContext context,
             [FromBody] User model)
         {
-            Console.WriteLine("Entrou no Post");
             // Verifica se os dados são válidos
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -38,6 +37,7 @@ namespace Shop2.Controllers
             try
             {
                 // Força o usuário a ser sempre "funcionário"
+                model.Role = "employee";
                 await context.SaveChangesAsync();
 
                 // Esconde a senha
